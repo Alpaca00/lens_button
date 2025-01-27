@@ -4,7 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 
 class LensButton extends StatefulWidget {
-  const LensButton({super.key});
+  const LensButton({
+    required this.onPressed,
+    super.key,
+    this.textStyle,
+    this.label = 'Developer Preview',
+    this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  });
+
+  final VoidCallback onPressed;
+  final String label;
+  final TextStyle? textStyle;
+  final EdgeInsetsGeometry padding;
 
   @override
   State<LensButton> createState() => _LensButtonState();
@@ -12,14 +23,12 @@ class LensButton extends StatefulWidget {
 
 class _LensButtonState extends State<LensButton> {
   final _isHovered = ValueNotifier(false);
-
   final _isPressed = ValueNotifier(false);
 
   @override
   void dispose() {
     _isHovered.dispose();
     _isPressed.dispose();
-
     super.dispose();
   }
 
@@ -29,6 +38,7 @@ class _LensButtonState extends State<LensButton> {
       child: DecoratedBox(
         position: DecorationPosition.foreground,
         decoration: const ShapeDecoration(
+          color: Colors.white30,
           shape: RoundedRectangleBorder(
             side: BorderSide(color: Color(0xFFEDEDED)),
             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -44,82 +54,48 @@ class _LensButtonState extends State<LensButton> {
               cursor: SystemMouseCursors.click,
               onHover: (_) => _isHovered.value = true,
               onExit: (_) => _isHovered.value = false,
-              child: Stack(
-                children: [
-                  const Positioned.fill(
-                    child: ColoredBox(color: Colors.white),
-                  ),
-                  Positioned.fill(
-                    child: ValueListenableBuilder(
-                      valueListenable: _isHovered,
-                      builder: (context, isHovered, child) {
-                        return AnimatedOpacity(
-                          opacity: isHovered ? 0 : 1,
-                          duration: const Duration(milliseconds: 170),
-                          curve: Curves.ease,
-                          child: child,
-                        );
-                      },
-                      child: const DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color(0xFFFEFEFE),
-                              Color(0xFFFBFBFB),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 14,
-                      bottom: 14,
-                      left: 26,
-                      right: 24,
-                    ),
-                    child: ValueListenableBuilder(
-                      valueListenable: _isPressed,
-                      builder: (context, isPressed, child) {
-                        return AnimatedScale(
-                          scale: isPressed ? 0.985 : 1,
-                          duration: const Duration(milliseconds: 170),
-                          child: child,
-                        );
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Flexible(
-                            child: Text(
-                              'Developer Preview',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontFamily: 'Inter',
+              child: GestureDetector(
+                onTapDown: (_) => _isPressed.value = true,
+                onTapUp: (_) => _isPressed.value = false,
+                onTapCancel: () => _isPressed.value = false,
+                onTap: widget.onPressed,
+                child: ValueListenableBuilder(
+                  valueListenable: _isPressed,
+                  builder: (context, isPressed, child) {
+                    return AnimatedScale(
+                      scale: isPressed ? 0.97 : 1,
+                      duration: const Duration(milliseconds: 150),
+                      child: child,
+                    );
+                  },
+                  child: Padding(
+                    padding: widget.padding,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          widget.label,
+                          style: widget.textStyle ??
+                              const TextStyle(
+                                fontFamily: 'Doto',
                                 fontWeight: FontWeight.w500,
                                 color: Color(0xFF2C2D30),
                                 fontSize: 15,
                                 height: 1.1,
                                 letterSpacing: -0.13,
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          ValueListenableBuilder(
-                            valueListenable: _isHovered,
-                            builder: (context, isHovered, _) {
-                              return _Circle(isHovered: isHovered);
-                            },
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 8),
+                        ValueListenableBuilder(
+                          valueListenable: _isHovered,
+                          builder: (context, isHovered, _) {
+                            return _Circle(isHovered: isHovered);
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ),

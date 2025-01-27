@@ -10,13 +10,13 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Color(0xFFFFFFFF),
+        backgroundColor: const Color(0xFFFFFFFF),
         body: Stack(
           children: [
-            Positioned(
+            const Positioned(
               right: 12,
               bottom: -28,
               child: FlutterLogo(
@@ -25,7 +25,11 @@ class App extends StatelessWidget {
               ),
             ),
             Center(
-              child: LensButton(),
+              child: LensButton(
+                onPressed: () {
+                  print('Button Pressed');
+                },
+              ),
             ),
           ],
         ),
