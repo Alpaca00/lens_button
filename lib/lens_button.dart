@@ -10,12 +10,16 @@ class LensButton extends StatefulWidget {
     this.textStyle,
     this.label = 'Developer Preview',
     this.padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    this.backgroundColor = const Color(0xFF212121),
+    this.foregroundColor = const Color(0xFFEDEDED),
   });
 
   final VoidCallback onPressed;
   final String label;
   final TextStyle? textStyle;
   final EdgeInsetsGeometry padding;
+  final Color backgroundColor;
+  final Color foregroundColor;
 
   @override
   State<LensButton> createState() => _LensButtonState();
@@ -36,12 +40,11 @@ class _LensButtonState extends State<LensButton> {
   Widget build(BuildContext context) {
     return RepaintBoundary(
       child: DecoratedBox(
-        position: DecorationPosition.foreground,
-        decoration: const ShapeDecoration(
-          color: Colors.white30,
+        decoration: ShapeDecoration(
+          color: widget.backgroundColor,
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: Color(0xFFEDEDED)),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+            side: BorderSide(color: widget.backgroundColor),
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
         ),
         child: ClipRRect(
@@ -76,10 +79,10 @@ class _LensButtonState extends State<LensButton> {
                         Text(
                           widget.label,
                           style: widget.textStyle ??
-                              const TextStyle(
+                              TextStyle(
                                 fontFamily: 'Doto',
                                 fontWeight: FontWeight.w500,
-                                color: Color(0xFF2C2D30),
+                                color: widget.foregroundColor,
                                 fontSize: 15,
                                 height: 1.1,
                                 letterSpacing: -0.13,
@@ -123,8 +126,8 @@ class _CircleState extends State<_Circle> with TickerProviderStateMixin {
   );
 
   late final _color = ColorTween(
-    begin: const Color(0x4D2C2D30),
-    end: const Color(0x992C2D30),
+    begin: const Color(0xFFEDEDED),
+    end: const Color(0xFFE0E0E0),
   ).chain(CurveTween(curve: Curves.ease)).animate(_colorController);
 
   late final _translationController = AnimationController.unbounded(
